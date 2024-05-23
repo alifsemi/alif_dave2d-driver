@@ -138,6 +138,8 @@
         <file category="sourceC"  name="d0/src/dave_d0_mm_dynamic.c"/>
         <file category="sourceC"  name="d0/src/dave_d0_mm_fixed_range_fixed_blkcnt.c"/>
         <file category="sourceC"  name="d0/src/dave_d0_mm_fixed_range.c"/>
+        <!-- config header -->
+        <file category="header"   name="dave_cfg.h" attr="config" version="1.0.0"/>
       </files>
     </component>
   </components>
