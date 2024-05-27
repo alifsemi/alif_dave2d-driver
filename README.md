@@ -23,5 +23,5 @@ Layer 0 provides a set of memory managers.
 ## Requirements
 
 This CMSIS pack requires some packs to be installed and added to the project:
-    * [ARM::CMSIS](https://github.com/ARM-software/CMSIS_5/releases/tag/5.9.0)
-    * [AlifSemiconductor::Ensemble](https://github.com/alifsemi/alif_ensemble-cmsis-dfp/releases/tag/v1.1.1)
+* [ARM::CMSIS@5.9.0](https://github.com/ARM-software/CMSIS_5/releases/tag/5.9.0)
+* [AlifSemiconductor::Ensemble@1.1.1](https://github.com/alifsemi/alif_ensemble-cmsis-dfp/releases/tag/v1.1.1)
