@@ -61,9 +61,10 @@ PACK_BASE_FILES="
 # Specify additional dependencies for packchk
 # Default: empty
 #
-# PACKCHK_DEPS="
-#   https://github.com/alifsemi/alif_ensemble-cmsis-dfp/releases/download/v1.1.1/AlifSemiconductor.Ensemble.pdsc
-# "
+PACKCHK_DEPS="
+  https://raw.githubusercontent.com/ARM-software/CMSIS_5/5.9.0/ARM.CMSIS.pdsc
+  https://github.com/alifsemi/alif_ensemble-cmsis-dfp/releases/download/v1.1.1/AlifSemiconductor.Ensemble.pdsc
+"
 
 # Optional: restrict fallback modes for changelog generation
 # Default: full
