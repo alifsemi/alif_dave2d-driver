@@ -19,3 +19,17 @@ Complete D1 documentation is available at `d1/doc/driver_l1/index.html`.
 ## Layer 0 (D0)
 
 Layer 0 provides a set of memory managers.
+
+## Requirements
+
+This CMSIS pack requires some packs to be installed and added to the project:
+* [ARM::CMSIS@5.9.0](https://github.com/ARM-software/CMSIS_5/releases/tag/5.9.0)
+* [AlifSemiconductor::Ensemble@1.1.1](https://github.com/alifsemi/alif_ensemble-cmsis-dfp/releases/tag/v1.1.1)
+
+## How to create and install CMSIS-Pack
+
+1. Make sure CMSIS Toolbox installed. Check `packchk` is available (add CMSIS Toolbox utils path to `PATH` if necessary).
+2. Set `CMSIS_PACK_ROOT` environment variables to cmsis-packs installation directory.
+3. Run `./gen_pack.sh` script
+4. Install generated CMSIS pack by following command:
+`cpackget add ./output/AlifSemiconductor.Dave2DDriver.1.0.0.pack`

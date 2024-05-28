@@ -26,8 +26,31 @@
     <keyword>D1</keyword>
   </keywords>
 
+  <requirements>
+    <packages>
+      <package name="CMSIS" vendor="ARM" version="5.9.0:5.9.0"/>
+      <package name="Ensemble" vendor="AlifSemiconductor" version="1.1.1:1.1.1"/>
+    </packages>
+  </requirements>
+
   <!-- conditions section -->
   <conditions>
+    <condition id="Ensemble">
+      <description>Alif Semiconductor Ensemble Series devices</description>
+      <require Dvendor="Alif Semiconductor:165"/>
+      <accept Dvendor="Alif Semiconductor:165" Dname="AE722F80*"/>
+      <accept Dvendor="Alif Semiconductor:165" Dname="AE512F80*"/>
+      <accept Dvendor="Alif Semiconductor:165" Dname="AE302F*"/>
+      <accept Dvendor="Alif Semiconductor:165" Dname="AE101F*"/>
+      <deny Cclass="Device" Cgroup="SDK Utilities"/>
+    </condition>
+    <condition id="Ensemble CMSIS_Driver">
+      <description>Requirement for CMSIS Driver</description>
+      <require condition="Ensemble"/>
+      <require Cclass="CMSIS" Cgroup="CORE"/>
+      <require Cclass="Device" Cgroup="Startup"/>
+      <require Cclass="Device" Cgroup="SOC Peripherals" Csub="PINCONF"/>
+    </condition>
     <condition id="DAVE2D Layer 1 Driver">
       <description>DAVE2D Layer 2 driver requires hardware dependent Layer 1</description>
       <require Cclass="Graphics" Cgroup="DAVE2D" Csub="Layer1"/>
@@ -102,7 +125,7 @@
       </files>
     </component>
 
-    <component Cclass="Graphics" Cgroup="DAVE2D" Csub="Layer1" Cversion="1.0.0">
+    <component Cclass="Graphics" Cgroup="DAVE2D" Csub="Layer1" Cversion="1.0.0" condition="Ensemble CMSIS_Driver">
       <description>D/AVE2D hardware dependent Layer 1 driver</description>
       <files>
         <!-- include folder / device header file -->
