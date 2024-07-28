@@ -18,7 +18,7 @@
 #define __1_dave_cfg_h_H
 
 #if defined(_RTE_)
-    #include "RTE_Components.h"
+#include "RTE_Components.h"
 #endif
 
 // Memory allocation options
@@ -27,18 +27,21 @@
 #define D1_MALLOC_CUSTOM    2
 
 // Use DLIST indirect
+#ifndef D1_DLIST_INDIRECT
 #define D1_DLIST_INDIRECT   0
+#endif
 
 // Choose memory allocation manager
-#define D1_MEM_ALLOC    D1_MALLOC_D0LIB
+#ifndef D1_MEM_ALLOC
+#define D1_MEM_ALLOC        D1_MALLOC_D0LIB
+#endif
 
 // Choose which d0lib memory manager to use
-#if (D1_MEM_ALLOC == D1_MALLOC_D0LIB)
-// #define WITH_MM_FIXED_RANGE_FIXED_BLKCNT
-
+#if (D1_MEM_ALLOC == D1_MALLOC_D0LIB) && \
+    !defined(WITH_MM_DYNAMIC) && \
+    !defined(WITH_MM_FIXED_RANGE) && \
+    !defined(WITH_MM_FIXED_RANGE_FIXED_BLKCNT)
 #define WITH_MM_FIXED_RANGE
-
-// #define WITH_MM_DYNAMIC
 #endif
 
 #endif

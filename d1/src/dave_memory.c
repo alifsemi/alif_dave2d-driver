@@ -19,7 +19,10 @@
 //-----------------------------------------------------------------------------
 #include <string.h>
 #include "dave_base.h"
+#if defined(_RTE_)
 #include "RTE_Components.h"
+#endif
+#include CMSIS_device_header
 #include "global_map.h"
 #include "dave_cfg.h"
 #if (D1_MEM_ALLOC == D1_MALLOC_D0LIB)
@@ -123,6 +126,7 @@ int d1_cacheflush( d1_device *handle, int memtype )
     {
         SCB_CleanInvalidateDCache();
     }
+    return 1;
 }
 
 //--------------------------------------------------------------------------
@@ -130,7 +134,7 @@ int d1_cacheflush( d1_device *handle, int memtype )
 void * d1_maptovidmem( d1_device *handle, void *ptr )
 {
     (void) handle;
-    (void) ptr;
+    return ptr;
 }
 
 //--------------------------------------------------------------------------
@@ -138,7 +142,7 @@ void * d1_maptovidmem( d1_device *handle, void *ptr )
 void * d1_mapfromvidmem( d1_device *handle, void *ptr )
 {
     (void) handle;
-    (void) ptr;
+    return ptr;
 }
 
 //--------------------------------------------------------------------------

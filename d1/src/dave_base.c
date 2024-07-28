@@ -20,7 +20,9 @@
 #include "dave_base_intern.h"
 #include "dave_registermap.h"
 #include "dave_d0lib.h"
+#if defined(_RTE_)
 #include "RTE_Components.h"
+#endif
 #include "system_utils.h"
 #include "dave_irq.h"
 #include "dave_cfg.h"
