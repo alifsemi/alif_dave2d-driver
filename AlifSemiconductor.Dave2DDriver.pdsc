@@ -3,7 +3,7 @@
   <vendor>AlifSemiconductor</vendor>
   <name>Dave2DDriver</name>
   <description>Alif Semiconductor D/AVE2D driver CMSIS package</description>
-  <url>https://github.com/alifsemi/alif_dave2d_driver/raw/main/</url>
+  <url>https://github.com/alifsemi/alif_dave2d-driver/raw/main/</url>
   <supportContact>support@alifsemi.com</supportContact>
   <!-- optional license file -->
   <!--
