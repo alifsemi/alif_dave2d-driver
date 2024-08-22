@@ -3,7 +3,7 @@
   <vendor>AlifSemiconductor</vendor>
   <name>Dave2DDriver</name>
   <description>Alif Semiconductor D/AVE2D driver CMSIS package</description>
-  <url>https://github.com/alifsemi/alif_dave2d_driver/raw/main/</url>
+  <url>https://github.com/alifsemi/alif_dave2d-driver/</url>
   <supportContact>support@alifsemi.com</supportContact>
   <!-- optional license file -->
   <!--
@@ -12,7 +12,10 @@
   -->
 
   <releases>
-    <release version="1.0.0" date="2024-05-21">
+    <release version="1.0.1"  tag="v1.0.1" url="https://github.com/alifsemi/alif_dave2d-driver/releases/download/v1.0.1/AlifSemiconductor.Dave2DDriver.1.0.1.pack"  date="2024-08-23">
+      Fix driver compilation for bare-metal projects 
+    </release>
+    <release version="1.0.0" tag="v1.0.0" url="https://github.com/alifsemi/alif_dave2d-driver/releases/download/v1.0.0/AlifSemiconductor.Dave2DDriver.1.0.0.pack" date="2024-05-21">
       Initial release. D2 version 3.18 from TES
     </release>
   </releases>
