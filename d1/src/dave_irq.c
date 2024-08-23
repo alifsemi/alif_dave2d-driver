@@ -17,13 +17,15 @@
 // Includes
 //-----------------------------------------------------------------------------
 #include <stddef.h>
+#include "RTE_Components.h"
+#include CMSIS_device_header
+
+#include "dave_cfg.h"
 #include "dave_base_intern.h"
 #include "dave_base.h"
 #include "dave_registermap.h"
-#include "RTE_Components.h"
-#include "dave_cfg.h"
 
-#if (LV_USE_OS == LV_OS_FREERTOS)
+#if defined(LV_USE_OS) && (LV_USE_OS == LV_OS_FREERTOS)
 #include "FreeRTOS.h"
 #include "FreeRTOSConfig.h"
 #if configUSE_COUNTING_SEMAPHORES
@@ -39,7 +41,7 @@
 
 static d1_device_intern *s_isr_context;
 
-#if (LV_USE_OS == LV_OS_FREERTOS) && defined(USE_SEMAPHORE)
+#if defined(USE_SEMAPHORE)
 static SemaphoreHandle_t irqSemaphoreHandle = NULL;
 #else
 static volatile unsigned int s_dlists_done = 0;
@@ -53,7 +55,7 @@ void d1_irq_enable()
     // Clear all interrupts and enable DLIST IRQ
     D1_REG(D2_IRQCTL) = D1_IRQCTL_ENABLE;
 
-#if (LV_USE_OS == LV_OS_FREERTOS)
+#if defined(LV_USE_OS) && (LV_USE_OS == LV_OS_FREERTOS)
     // Set DAVE 2D interrupt priority to FreeRTOS kernel level
     NVIC_SetPriority(GPU2D_IRQ_IRQn, configKERNEL_INTERRUPT_PRIORITY-1);
 #endif
@@ -85,7 +87,7 @@ int d1_queryirq( d1_device *handle, int irqmask, int timeout )
         return 1;
     }
 
-#if (LV_USE_OS == LV_OS_FREERTOS) && defined(USE_SEMAPHORE)
+#if defined(USE_SEMAPHORE)
     if (irqSemaphoreHandle != NULL)
     {
         if (xSemaphoreTake(irqSemaphoreHandle,
@@ -114,7 +116,7 @@ void d1_set_isr_context( void *context )
 {
     s_isr_context = (d1_device_intern *) context;
 
-#if (LV_USE_OS == LV_OS_FREERTOS) && defined(USE_SEMAPHORE)
+#if defined(USE_SEMAPHORE)
     if (irqSemaphoreHandle != NULL)
     {
         vSemaphoreDelete(irqSemaphoreHandle);
@@ -149,7 +151,7 @@ void GPU2D_IRQHandler( void )
         }
 #endif
 
-#if (LV_USE_OS == LV_OS_FREERTOS) && defined(USE_SEMAPHORE)
+#if defined(USE_SEMAPHORE)
         BaseType_t context_switch = pdFALSE;
         xSemaphoreGiveFromISR(irqSemaphoreHandle, &context_switch);
         portYIELD_FROM_ISR(context_switch);
