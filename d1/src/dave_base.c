@@ -16,14 +16,16 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
+#include "RTE_Components.h"
+#include CMSIS_device_header
+
+#include "dave_cfg.h"
 #include "dave_base.h"
 #include "dave_base_intern.h"
 #include "dave_registermap.h"
 #include "dave_d0lib.h"
-#include "RTE_Components.h"
 #include "system_utils.h"
 #include "dave_irq.h"
-#include "dave_cfg.h"
 
 //---------------------------------------------------------------------------
 // These helper macros are used to stringify a given macro

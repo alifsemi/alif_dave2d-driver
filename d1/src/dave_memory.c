@@ -18,10 +18,12 @@
 // Includes
 //-----------------------------------------------------------------------------
 #include <string.h>
-#include "dave_base.h"
 #include "RTE_Components.h"
-#include "global_map.h"
+#include CMSIS_device_header
+
 #include "dave_cfg.h"
+#include "dave_base.h"
+#include "global_map.h"
 #if (D1_MEM_ALLOC == D1_MALLOC_D0LIB)
 #include "dave_d0lib.h"
 #elif (D1_MEM_ALLOC == D1_MALLOC_STDLIB)

@@ -20,10 +20,10 @@
 #include "RTE_Components.h"
 #include CMSIS_device_header
 
+#include "dave_cfg.h"
 #include "dave_base_intern.h"
 #include "dave_base.h"
 #include "dave_registermap.h"
-#include "dave_cfg.h"
 
 #if defined(LV_USE_OS) && (LV_USE_OS == LV_OS_FREERTOS)
 #include "FreeRTOS.h"
