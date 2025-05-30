@@ -182,7 +182,7 @@ unsigned int d0_dummy_memsize( void* ctrlblk,void *ptr){ (void ) ctrlblk; (void 
 void d0_preparememorymanager( d0_memmanager *mgr, d0_memmanager_type memmanagertype, void *base,
                           unsigned int size, void *ctrlblk, unsigned int blkcnt )
 {
-  (void)blkcnt; (void*)ctrlblk; (void)size; (void*)base;
+  (void)blkcnt; (void)ctrlblk; (void)size; (void)base;
   if ( ! mgr ) {
     return;
   }
