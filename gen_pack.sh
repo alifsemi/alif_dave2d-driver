@@ -29,9 +29,9 @@ DEFAULT_ARGS=()
 # Default: empty (all folders)
 #
 PACK_DIRS="
-  ../d0/
-  ../d1/
-  ../d2/
+  d0/
+  d1/
+  d2/
 "
 
 # Specify file names to be added to pack base directory
@@ -39,7 +39,7 @@ PACK_DIRS="
 #
 PACK_BASE_FILES="
   dave_cfg.h
-  ../README.md
+  README.md
 "
 
 # Specify file names to be deleted from pack build directory
