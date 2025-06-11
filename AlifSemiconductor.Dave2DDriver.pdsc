@@ -12,8 +12,11 @@
   -->
 
   <releases>
+    <release version="1.0.2"  tag="v1.0.2" url="https://github.com/alifsemi/alif_dave2d-driver/releases/download/v1.0.2/AlifSemiconductor.Dave2DDriver.1.0.2.pack"  date="2025-06-11">
+      Fix some compilation warnings
+    </release>
     <release version="1.0.1"  tag="v1.0.1" url="https://github.com/alifsemi/alif_dave2d-driver/releases/download/v1.0.1/AlifSemiconductor.Dave2DDriver.1.0.1.pack"  date="2024-08-29">
-      Fix driver compilation for bare-metal projects 
+      Fix driver compilation for bare-metal projects
     </release>
     <release version="1.0.0" tag="v1.0.0" url="https://github.com/alifsemi/alif_dave2d-driver/releases/download/v1.0.0/AlifSemiconductor.Dave2DDriver.1.0.0.pack" date="2024-05-21">
       Initial release. D2 version 3.18 from TES
