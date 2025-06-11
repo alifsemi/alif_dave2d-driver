@@ -195,7 +195,7 @@ unsigned int d0_fixed_range_heapfree(void *ctrlblk, void *ptr )
  *****************************************************************************/
 unsigned int d0_fixed_range_heapmsize(void *unused, void *ptr)
 {
-  (void*)unused;
+  (void)unused;
   return ((memblk*)ptr-1)->size;
 }
 

@@ -28,15 +28,18 @@ DEFAULT_ARGS=()
 # An empty list defaults to all folders next to this script.
 # Default: empty (all folders)
 #
-# PACK_DIRS="
-#   <list directories here>
-# "
+PACK_DIRS="
+  d0/
+  d1/
+  d2/
+"
 
 # Specify file names to be added to pack base directory
 # Default: empty
 #
 PACK_BASE_FILES="
   dave_cfg.h
+  README.md
 "
 
 # Specify file names to be deleted from pack build directory
