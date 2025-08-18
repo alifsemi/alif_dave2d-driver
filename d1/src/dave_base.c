@@ -24,7 +24,7 @@
 #include "dave_base_intern.h"
 #include "dave_registermap.h"
 #include "dave_d0lib.h"
-#include "system_utils.h"
+#include "sys_utils.h"
 #include "dave_irq.h"
 
 //---------------------------------------------------------------------------
