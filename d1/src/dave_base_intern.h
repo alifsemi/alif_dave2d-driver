@@ -5,8 +5,6 @@
 *  Section: Macros
 */
 
-#include "global_map.h"
-
 // Get D/AVE2D register
 #define D1_REG(index)		((long *) GPU2D_BASE)[index]
 
