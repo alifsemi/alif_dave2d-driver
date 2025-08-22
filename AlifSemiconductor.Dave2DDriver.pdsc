@@ -48,6 +48,10 @@
       <description>Alif Semiconductor Ensemble Series devices</description>
       <require Dvendor="Alif Semiconductor:165"/>
       <accept Dvendor="Alif Semiconductor:165" Dname="AE8*"/>
+      <accept Dvendor="Alif Semiconductor:165" Dname="AE6*"/>
+      <accept Dvendor="Alif Semiconductor:165" Dname="AE4*"/>
+      <accept Dvendor="Alif Semiconductor:165" Dname="AE1C1F405*"/>
+      <accept Dvendor="Alif Semiconductor:165" Dname="AB1C1F4M5*"/>
       <accept Dvendor="Alif Semiconductor:165" Dname="AE722F80*"/>
       <accept Dvendor="Alif Semiconductor:165" Dname="AE512F80*"/>
       <accept Dvendor="Alif Semiconductor:165" Dname="AE302F*"/>
