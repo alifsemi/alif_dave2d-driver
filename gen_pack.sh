@@ -66,7 +66,7 @@ PACK_BASE_FILES="
 #
 PACKCHK_DEPS="
   https://github.com/ARM-software/CMSIS_6/raw/v6.1.0/ARM.CMSIS.pdsc
-  https://github.com/alifsemi/alif_ensemble-cmsis-dfp/releases/download/v1.2.2/AlifSemiconductor.Ensemble.pdsc
+  https://github.com/alifsemi/alif_ensemble-cmsis-dfp/releases/download/v2.0.2/AlifSemiconductor.Ensemble.pdsc
 "
 
 # Optional: restrict fallback modes for changelog generation
