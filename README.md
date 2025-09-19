@@ -24,7 +24,7 @@ Layer 0 provides a set of memory managers.
 
 This CMSIS pack requires some packs to be installed and added to the project:
 * [ARM::CMSIS@5.9.0](https://github.com/ARM-software/CMSIS_5/releases/tag/5.9.0)
-* [AlifSemiconductor::Ensemble@1.1.1](https://github.com/alifsemi/alif_ensemble-cmsis-dfp/releases/tag/v1.1.1)
+* [AlifSemiconductor::Ensemble@1.1.1](https://github.com/alifsemi/alif_ensemble-cmsis-dfp/releases/tag/v1.1.1) or [AlifSemiconductor::Ensemble@2.0.2](https://github.com/alifsemi/alif_ensemble-cmsis-dfp/releases/tag/v2.0.2)
 
 ## How to create and install CMSIS-Pack
 
@@ -32,4 +32,4 @@ This CMSIS pack requires some packs to be installed and added to the project:
 2. Set `CMSIS_PACK_ROOT` environment variables to cmsis-packs installation directory.
 3. Run `./gen_pack.sh` script
 4. Install generated CMSIS pack by following command:
-`cpackget add ./output/AlifSemiconductor.Dave2DDriver.1.0.2.pack`
+`cpackget add ./output/AlifSemiconductor.Dave2DDriver.2.0.2.pack`
