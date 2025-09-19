@@ -5,8 +5,18 @@
 *  Section: Macros
 */
 
+#ifdef __ZEPHYR__
+#include <zephyr/devicetree.h>
+
+/* Define the D/AVE2D device node */
+#define DAVE2D_DEV DT_ALIAS(d2_inst)
+
+/* Define the D/AVE2D base address */
+#define GPU2D_BASE DT_REG_ADDR(DAVE2D_DEV)
+#endif
+
 // Get D/AVE2D register
-#define D1_REG(index)		((long *) GPU2D_BASE)[index]
+#define D1_REG(index)      ((long *) GPU2D_BASE)[index]
 
 // Convert d1_device
 #define D1_DEV(handle)     ((d1_device_intern *) handle)

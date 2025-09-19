@@ -17,8 +17,17 @@
 // Includes
 //-----------------------------------------------------------------------------
 #include <stddef.h>
+
+#ifdef __ZEPHYR__
+#include <zephyr/kernel.h>
+#include <zephyr/irq.h>
+
+#define GPU2D_IRQ_irq      DT_IRQ(DAVE2D_DEV, irq)
+#define GPU2D_IRQ_priority DT_IRQ(DAVE2D_DEV, priority)
+#else
 #include "RTE_Components.h"
 #include CMSIS_device_header
+#endif
 
 #include "dave_cfg.h"
 #include "dave_base_intern.h"
@@ -31,8 +40,8 @@
 #if configUSE_COUNTING_SEMAPHORES
 #include "semphr.h"
 #define USE_SEMAPHORE
-#endif // USE_SEMAPHORE
-#endif // LV_OS_FREERTOS
+#endif
+#endif
 
 #define D1_IRQCTL_ENABLE    (D2IRQCTL_CLR_FINISH_DLIST | D2IRQCTL_CLR_FINISH_ENUM\
                             | D2IRQCTL_ENABLE_FINISH_DLIST)
@@ -43,10 +52,12 @@ static d1_device_intern *s_isr_context;
 
 #if defined(USE_SEMAPHORE)
 static SemaphoreHandle_t irqSemaphoreHandle = NULL;
+#elif defined(__ZEPHYR__)
+static struct k_sem irqSem;
+void GPU2D_IRQHandler(void);
 #else
 static volatile unsigned int s_dlists_done = 0;
 #endif
-
 
 //--------------------------------------------------------------------------
 //
@@ -60,8 +71,16 @@ void d1_irq_enable()
     NVIC_SetPriority(GPU2D_IRQ_IRQn, configKERNEL_INTERRUPT_PRIORITY-1);
 #endif
 
+#ifdef __ZEPHYR__
+    // Set DAVE2D interrupt handler
+    IRQ_CONNECT(GPU2D_IRQ_irq, GPU2D_IRQ_priority, GPU2D_IRQHandler, NULL, 0)
+
+    // Enable DAVE2D interrupt
+    irq_enable(GPU2D_IRQ_irq);
+#else
     // Enable interrupt in NVIC
     NVIC_EnableIRQ(GPU2D_IRQ_IRQn);
+#endif
 }
 
 //--------------------------------------------------------------------------
@@ -71,8 +90,13 @@ void d1_irq_disable()
     // Clear all interrupts and disable DLIST IRQ
     D1_REG(D2_IRQCTL) = D1_IRQCTL_DISABLE;
 
+#ifdef __ZEPHYR__
+    // Disable D/AVE2D interrupt
+    irq_disable(GPU2D_IRQ_irq);
+#else
     // Disable interrupt in NVIC
     NVIC_DisableIRQ(GPU2D_IRQ_IRQn);
+#endif
 }
 
 //--------------------------------------------------------------------------
@@ -95,6 +119,10 @@ int d1_queryirq( d1_device *handle, int irqmask, int timeout )
         {
             return GPU2D_IRQ_IRQn;
         }
+    }
+#elif defined(__ZEPHYR__)
+    if (k_sem_take(&irqSem, K_MSEC(timeout))) {
+        return GPU2D_IRQ_irq;
     }
 #else
     for (; timeout > 0; --timeout)
@@ -124,6 +152,10 @@ void d1_set_isr_context( void *context )
     if (context != NULL)
     {
         irqSemaphoreHandle = xSemaphoreCreateCounting(10, 0);
+    }
+#elif defined(__ZEPHYR__)
+    if (context != NULL) {
+        k_sem_init(&irqSem, 0, 1);
     }
 #endif
 }
@@ -155,6 +187,8 @@ void GPU2D_IRQHandler( void )
         BaseType_t context_switch = pdFALSE;
         xSemaphoreGiveFromISR(irqSemaphoreHandle, &context_switch);
         portYIELD_FROM_ISR(context_switch);
+#elif defined(__ZEPHYR__)
+        k_sem_give(&irqSem);
 #else
         ++s_dlists_done;
 #endif

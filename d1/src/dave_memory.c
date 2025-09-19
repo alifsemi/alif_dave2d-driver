@@ -18,8 +18,12 @@
 // Includes
 //-----------------------------------------------------------------------------
 #include <string.h>
+#ifdef __ZEPHYR__
+#include <zephyr/cache.h>
+#else
 #include "RTE_Components.h"
 #include CMSIS_device_header
+#endif
 
 #include "dave_cfg.h"
 #include "dave_base.h"
@@ -97,7 +101,12 @@ int d1_cacheblockflush( d1_device *handle, int memtype, const void *ptr, unsigne
     (void) handle;
     (void) memtype;
 
+#ifdef __ZEPHYR__
+    sys_cache_data_flush_and_invd_range((void *)ptr, size);
+#else
     SCB_CleanInvalidateDCache_by_Addr((void*)ptr, size);
+#endif
+
     return 1;
 }
 
@@ -122,8 +131,14 @@ int d1_cacheflush( d1_device *handle, int memtype )
 
     if (memtype & d1_mem_dlist)
     {
+#ifdef __ZEPHYR__
+        sys_cache_data_invd_all();
+#else
         SCB_CleanInvalidateDCache();
+#endif
     }
+
+    return 1;
 }
 
 //--------------------------------------------------------------------------
@@ -132,6 +147,8 @@ void * d1_maptovidmem( d1_device *handle, void *ptr )
 {
     (void) handle;
     (void) ptr;
+
+    return NULL;
 }
 
 //--------------------------------------------------------------------------
@@ -140,6 +157,8 @@ void * d1_mapfromvidmem( d1_device *handle, void *ptr )
 {
     (void) handle;
     (void) ptr;
+
+    return NULL;
 }
 
 //--------------------------------------------------------------------------
