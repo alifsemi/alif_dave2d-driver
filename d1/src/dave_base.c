@@ -61,8 +61,13 @@
 static const char g_versionid[] = "V" D1_VERSION_STRING ;
 
 #ifdef __ZEPHYR__
+#if __has_include(<zephyr/version.h>)
+#define DT_CLOCK_LABEL clockctrl
+#else
+#define DT_CLOCK_LABEL clock
+#endif
 #define DAVE2D_CLK DT_CLOCKS_CELL(DAVE2D_DEV, clkid)
-static const struct device *const clock_ctrl = DEVICE_DT_GET(DT_NODELABEL(clock));
+static const struct device *const clock_ctrl = DEVICE_DT_GET(DT_NODELABEL(DT_CLOCK_LABEL));
 #endif
 
 //--------------------------------------------------------------------------
