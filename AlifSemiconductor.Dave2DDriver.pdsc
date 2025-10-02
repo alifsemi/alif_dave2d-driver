@@ -5,11 +5,7 @@
   <description>Alif Semiconductor D/AVE2D driver CMSIS package</description>
   <url>https://github.com/alifsemi/alif_dave2d-driver/raw/main/</url>
   <supportContact>support@alifsemi.com</supportContact>
-  <!-- optional license file -->
-  <!--
-  <license>
-  </license>
-  -->
+  <license>LICENSE.txt</license>
 
   <releases>
     <release version="2.0.2"  tag="v2.0.2" url="https://github.com/alifsemi/alif_dave2d-driver/releases/download/v2.0.2/AlifSemiconductor.Dave2DDriver.2.0.2.pack"  date="2025-09-19">

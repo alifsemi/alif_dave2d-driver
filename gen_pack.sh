@@ -39,6 +39,7 @@ PACK_DIRS="
 #
 PACK_BASE_FILES="
   dave_cfg.h
+  LICENSE.txt
   README.md
 "
 
