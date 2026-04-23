@@ -30,6 +30,7 @@
 #include "dave_driver.h"
 #include "dave_intern.h"
 #include "dave_texture.h"
+#include "dave_base.h"
 
 
 /*--------------------------------------------------------------------------
@@ -109,6 +110,8 @@ d2_s32 d2_settexture( d2_device *handle, void *ptr, d2_s32 pitch, d2_s32 width, 
    D2_CHECKERR( pitch >= 0, D2_VALUENEGATIVE );     /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
    D2_CHECKERR( width >= 0, D2_VALUENEGATIVE );     /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
    D2_CHECKERR( height >= 0, D2_VALUENEGATIVE );    /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
+
+   ptr = d1_localtoglobal(ptr);
 
    ctx = D2_DEV(handle)->ctxselected;
    ctx->internaldirty |= d2_dirty_material;
