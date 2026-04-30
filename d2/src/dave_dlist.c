@@ -48,6 +48,7 @@
 #include "dave_intern.h"
 #include "dave_dlist.h"
 #include "dave_memory.h"
+#include "dave_base.h"
 
 
 #define D2_EXECUTE_DLIST_NEEDWAIT defined
@@ -334,7 +335,7 @@ void d2_nextdlistblock_intern( d2_dlist *dlist )
          return;
       }
       /* insert next block address (fix jump) */
-      *patch = (d2_s32) dlist->currentblock->block;
+      *patch = (d2_s32) d1_localtoglobal(dlist->currentblock->block);
    }
    else if ((dlist->blocksize < 1) || (vidmemBlocks->slicesleft == 1))
    { /* 'low localmem' mode: the spare block for the jump is only needed in last slice */
@@ -1264,7 +1265,7 @@ d2_s32* d2_add_dlistlist_intern( const d2_device *handle, d2_dlist *dlist, const
       }
    }
 
-   dlist_list[pos] = (d2_s32)dlistaddress;
+   dlist_list[pos] = (d2_s32)d1_localtoglobal(dlistaddress);
    dlist->dlist_addresses_cur = (d2_s16) (pos + 1);
 
    return &dlist_list[pos];

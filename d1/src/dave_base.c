@@ -19,6 +19,7 @@
 #ifdef __ZEPHYR__
 #include <zephyr/drivers/clock_control.h>
 #include <zephyr/dt-bindings/clock/alif_ensemble_clocks.h>
+#include <soc_memory_map.h>
 #else
 #include "RTE_Components.h"
 #include CMSIS_device_header
@@ -223,3 +224,18 @@ void d1_setregister( d1_device *handle, int deviceid, int index, long value )
     }
 }
 
+//--------------------------------------------------------------------------
+//
+void * d1_localtoglobal( const void *ptr )
+{
+    if (ptr == NULL)
+    {
+        return NULL;
+    }
+
+#ifdef __ZEPHYR__
+    return (void *)local_to_global(ptr);
+#else
+    return (void *)LocalToGlobal((void *)ptr);
+#endif
+}

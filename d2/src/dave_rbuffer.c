@@ -121,6 +121,7 @@
 #include "dave_intern.h"
 #include "dave_memory.h"
 #include "dave_rbuffer.h"
+#include "dave_base.h"
 
 
 /*--------------------------------------------------------------------------*/
@@ -664,6 +665,8 @@ extern d2_s32 d2_relocateframe( d2_device *handle, const void *ptr )
   
    D2_VALIDATE( handle, D2_INVALIDDEVICE );  /* PRQA S 3112 */ /* $Misra: #DEBUG_MACRO $*/
    D2_CHECKERR( ptr, D2_NOVIDEOMEM );        /* PRQA S 3112 */ /* $Misra: #DEBUG_MACRO $*/
+
+   ptr = d1_localtoglobal(ptr);
 
    d2_scratch2dlist_intern(handle);
 

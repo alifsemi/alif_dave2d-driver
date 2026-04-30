@@ -55,6 +55,7 @@
 #include "dave_texture.h"
 #include "dave_registermap.h"
 #include "dave_box.h"
+#include "dave_base.h"
 
 /*--------------------------------------------------------------------------
  *
@@ -159,7 +160,7 @@ d2_s32 d2_setblitsrc( d2_device *handle, void *ptr, d2_s32 pitch, d2_s32 width, 
 
    ctx = D2_DEV(handle)->ctxselected;
 
-   ctx->blit_src    = ptr;
+   ctx->blit_src    = d1_localtoglobal(ptr);
    ctx->blit_pitch  = pitch;
    ctx->blit_width  = width;
    ctx->blit_height = height;

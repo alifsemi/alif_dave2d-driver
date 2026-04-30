@@ -1323,6 +1323,24 @@ extern const d1_displaycaps * d1_displaygetcaps( d1_device *handle );
 #endif /* Dx4 */
 
 /*--------------------------------------------------------------------------
+*   Function: d1_localtoglobal
+*
+*   Convert a CPU local address to global address for hardware access.
+*
+*   On Alif Ensemble, the M55 CPU uses local addresses to access memories
+*   such as DTCM, but the DAVE2D IP block requires global addresses to
+*   DMA-access the same memory.
+*
+*   Parameters:
+*     ptr - CPU local address
+*
+*   Returns:
+*     void * - corresponding global address accessible by DAVE2D hardware,
+*              or the original ptr if no translation is needed.
+*/
+extern void * d1_localtoglobal( const void *ptr );
+
+/*--------------------------------------------------------------------------
 *   Function: d1_createdifbo
 *
 *   Create a DI FBO for a given frame buffer.
