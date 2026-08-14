@@ -324,8 +324,15 @@ int d0_initdefaultheapmanager( void )
  *****************************************************************************/
 void * d0_allocvidmem( unsigned int size )
 {
-  if (!videomemory) return NULL;
-  if (!videomemory->allocmem || !videomemory->ctrlblk) return NULL;
+  if (!videomemory || !videomemory->allocmem) return NULL;
+
+#ifdef WITH_MM_DYNAMIC
+  /* only the dynamic manager ignores ctrlblk; every other allocator
+   * dereferences it, so a NULL ctrlblk must still be rejected for them */
+  if (videomemory->allocmem != d0_dyn_allocmem_wrapper && !videomemory->ctrlblk) return NULL;
+#else
+  if (!videomemory->ctrlblk) return NULL;
+#endif
 
   return videomemory->allocmem( videomemory->ctrlblk, size);
 }
