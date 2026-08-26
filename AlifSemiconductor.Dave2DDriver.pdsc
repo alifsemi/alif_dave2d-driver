@@ -89,7 +89,6 @@
         <file category="header"   name="d2/inc/dave_registermap.h"/>
         <file category="header"   name="d2/inc/dave_types.h"/>
         <!-- source files and private headers -->
-        <file category="sourceC"  name="d2/src/dave_64bitoperation.c"/>
         <file category="sourceC"  name="d2/src/dave_blit.c"/>
         <file category="sourceC"  name="d2/src/dave_box.c"/>
         <file category="header"   name="d2/src/dave_box.h"/>
