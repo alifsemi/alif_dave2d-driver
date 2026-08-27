@@ -17,7 +17,6 @@ if (CONFIG_DAVE2D)
   )
 
   zephyr_library_sources(
-    ${DAVE2D_DIR}/d2/src/dave_64bitoperation.c
     ${DAVE2D_DIR}/d2/src/dave_blit.c
     ${DAVE2D_DIR}/d2/src/dave_box.c
     ${DAVE2D_DIR}/d2/src/dave_box.h
