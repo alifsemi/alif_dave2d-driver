@@ -10,11 +10,11 @@
  *  2006-03-08 CSe  added argb1555 format
  *  2007-09-18 ASc  fix: removed duplicate alpha calculation in d2_blitcopy
  *  2007-09-20 ASc  changed comments from C++ to C, added wrapping for blits
- *  2008-05-21 CSe  corrected documentation for d2_setblitsrc 
+ *  2008-05-21 CSe  corrected documentation for d2_setblitsrc
  *  2008-06-13 MRe  RLE unit, CLUT256, subbyte formats, color keying
  *  2008-07-17 MRe  added RGBA formats
- *  2008-11-26 MRe  quick fix for texture width up to 2047 
- *  2009-03-06 MRe  fix for texture width up to 2048 
+ *  2008-11-26 MRe  quick fix for texture width up to 2047
+ *  2009-03-06 MRe  fix for texture width up to 2048
  *  2011-03-11 MRe  improved/removed context backup for blit
  *  2011-06-16 MRe  added Alpha4, Alpha2, Alpha1 texture formats
  *  2012-09-05 MRe  added check for Alpha4, Alpha2, Alpha1 texture formats
@@ -33,19 +33,19 @@
  * context states.
  *
  * Texel-to-pixel mapping:
- * Conceptually textures are seen the same way as a raster display: 
+ * Conceptually textures are seen the same way as a raster display:
  * Each texel is defined at the exact center of a grid cell.
- * The driver maps the left border of the left-most texel to the left border 
- * of the left-most destination pixel and the right border of the right-most 
+ * The driver maps the left border of the left-most texel to the left border
+ * of the left-most destination pixel and the right border of the right-most
  * texel to the right border of the right-most destination pixel.
  *
- * Example: 
+ * Example:
  * Find below an example of resizing a source texture with filtering enabled.
  * - A source image (3x1) is stretched to a destination rectangle (5x1).
  * - A source image (5x1) is downsized to a destination rectangle (3x1).
  * (see blit_mapping.png)
  *
- * Please not that the texel-to-pixel mapping implementation has changed 
+ * Please not that the texel-to-pixel mapping implementation has changed
  * for the magnification case since D2 Driver version 3.10.
  *
  *-------------------------------------------------------------------------- */
@@ -55,7 +55,6 @@
 #include "dave_texture.h"
 #include "dave_registermap.h"
 #include "dave_box.h"
-#include "dave_base.h"
 
 /*--------------------------------------------------------------------------
  *
@@ -122,7 +121,7 @@
  *   errorcode (D2_OK if successful) see list of <Errorcodes> for details
  *
  * note:
- * width can be max 2048 pixel, height can be max 1024 pixel. 
+ * width can be max 2048 pixel, height can be max 1024 pixel.
  *
  *   Please notice that a cache flush using 'd1_cacheblockflush' might be necessary if memory contents were changed before!
  *   To avoid problems you can use the d1 driver memory management functions 'd1_copytovidmem' or 'd1_copyfromvidmem',
@@ -149,8 +148,8 @@ d2_s32 d2_setblitsrc( d2_device *handle, void *ptr, d2_s32 pitch, d2_s32 width, 
       D2_RETERR( handle, D2_ILLEGALMODE );
    }
 
-   if ( (   (format_noflags == d2_mode_alpha4) 
-            || (format_noflags == d2_mode_alpha2) 
+   if ( (   (format_noflags == d2_mode_alpha4)
+            || (format_noflags == d2_mode_alpha2)
             || (format_noflags == d2_mode_alpha1) )
         && ( (0 == (D2_DEV(handle)->hwrevision & D2FB_SWDAVE)) && ((D2_DEV(handle)->hwrevision & 0xff) < 0x0a) )   )
    {
@@ -160,7 +159,7 @@ d2_s32 d2_setblitsrc( d2_device *handle, void *ptr, d2_s32 pitch, d2_s32 width, 
 
    ctx = D2_DEV(handle)->ctxselected;
 
-   ctx->blit_src    = d1_localtoglobal(ptr);
+   ctx->blit_src    = ptr;
    ctx->blit_pitch  = pitch;
    ctx->blit_width  = width;
    ctx->blit_height = height;
@@ -207,32 +206,32 @@ d2_s32 d2_setblitsrc( d2_device *handle, void *ptr, d2_s32 pitch, d2_s32 width, 
  *
  * (start code)
  *
- *     blitsrc.src:+-------------------------------------+ 
- *                 |           blitsrc.width             | 
- *                 |<----------blitsrc.pitch------------>| 
- *                 |                                     | 
- *                 |    srcx/y:+-----------------+  ^   
- *                 |           |                 |  |   
- *                 |           |<---srcwidth---->|  |   
- *                 |           |                 |  | srcheight  
- *                 |           |                 |  |   
- *                 |           +-------\\--------+  v  
- *                 |                    \\ 
- *                                       \\ 
- *         Display:  +--------------------\\----------------------+ 
- *                   |                     \\                     | 
- *                   |         dstx/y:+-----\\-------------+  ^   
- *                   |                |                    |  |   
- *                   |                |<------dstwidth---->|  |   
- *                   |                |                    |  | dstheight  
- *                   |                |                    |  |   
- *                   |                |                    |  |   
- *                   |                +--------------------+  v   
+ *     blitsrc.src:+-------------------------------------+
+ *                 |           blitsrc.width             |
+ *                 |<----------blitsrc.pitch------------>|
+ *                 |                                     |
+ *                 |    srcx/y:+-----------------+  ^
+ *                 |           |                 |  |
+ *                 |           |<---srcwidth---->|  |
+ *                 |           |                 |  | srcheight
+ *                 |           |                 |  |
+ *                 |           +-------\\--------+  v
+ *                 |                    \\
+ *                                       \\
+ *         Display:  +--------------------\\----------------------+
+ *                   |                     \\                     |
+ *                   |         dstx/y:+-----\\-------------+  ^
+ *                   |                |                    |  |
+ *                   |                |<------dstwidth---->|  |
+ *                   |                |                    |  | dstheight
+ *                   |                |                    |  |
+ *                   |                |                    |  |
+ *                   |                +--------------------+  v
  *
  * (end)
  *
- * <d2_setblitsrc> sets parameters for the texture buffer. 
- * <d2_blitcopy> sets parameters for an area of the texture buffer and 
+ * <d2_setblitsrc> sets parameters for the texture buffer.
+ * <d2_blitcopy> sets parameters for an area of the texture buffer and
  * an area of the framebuffer where the texture area will be mapped to.
  * Both areas don't need to be the same size.
  *
@@ -242,7 +241,7 @@ d2_s32 d2_setblitsrc( d2_device *handle, void *ptr, d2_s32 pitch, d2_s32 width, 
  * texture pitch can be >= 2048 if (srcheight-1) * pitch < 2048*1024 and if srcheight is multiple of dstheight
  *
  * d2_bf_filterv cannot be used if the pitch of the texture is >= 2048
- * 
+ *
  * returns:
  *   errorcode (D2_OK if successfull) see list of <Errorcodes> for details
  * */
@@ -301,7 +300,7 @@ d2_s32 d2_blitcopy( d2_device *handle, d2_s32 srcwidth, d2_s32 srcheight, d2_bli
    texWidth  = srcwidth;
    texHeight = srcheight;
 
-   if( (texWidth + srcx)  > ctx->blit_width  ) 
+   if( (texWidth + srcx)  > ctx->blit_width  )
    {
       texWidth  = (ctx->blit_width - srcx);
    }
@@ -358,7 +357,7 @@ d2_s32 d2_blitcopy( d2_device *handle, d2_s32 srcwidth, d2_s32 srcheight, d2_bli
    /* backup to stack */
    if(backup_context && (0 == (d2_bf_no_blitctxbackup & flags)))
    {
-      backup_context->fillmode          = ctx->fillmode;       
+      backup_context->fillmode          = ctx->fillmode;
       backup_context->internaldirty     = ctx->internaldirty;
       backup_context->features          = ctx->features;
       backup_context->texcenterx        = ctx->texcenterx;
@@ -379,7 +378,7 @@ d2_s32 d2_blitcopy( d2_device *handle, d2_s32 srcwidth, d2_s32 srcheight, d2_bli
       backup_context->cr2mask           = ctx->cr2mask;
       backup_context->texmodecl[0]      = ctx->texmodecl[0];
       backup_context->texmodecl[1]      = ctx->texmodecl[1];
-      backup_context->texlim[0].x1      = ctx->texlim[0].x1; 
+      backup_context->texlim[0].x1      = ctx->texlim[0].x1;
       backup_context->texlim[0].y1      = ctx->texlim[0].y1;
       backup_context->texlim[0].xadd2   = ctx->texlim[0].xadd2;
       backup_context->texlim[0].yadd2   = ctx->texlim[0].yadd2;
@@ -390,7 +389,7 @@ d2_s32 d2_blitcopy( d2_device *handle, d2_s32 srcwidth, d2_s32 srcheight, d2_bli
    }
    else
    {
-      fillmode_b = ctx->fillmode; 
+      fillmode_b = ctx->fillmode;
    }
 #endif
 
@@ -401,7 +400,7 @@ d2_s32 d2_blitcopy( d2_device *handle, d2_s32 srcwidth, d2_s32 srcheight, d2_bli
    if(0 != isRLE)
    {
       src = ctx->blit_src; /* rle textures can only be decoded from start */
-    
+
       /* offset will be done using u0, v0 (see below) */
    }
    else
@@ -470,7 +469,7 @@ d2_s32 d2_blitcopy( d2_device *handle, d2_s32 srcwidth, d2_s32 srcheight, d2_bli
          texmodecl1 = 0xff000000u; /* multiply by ctx->constalpha happens in d2_calctexturealpha_intern; */
          texmodecl2 = 0x00000000u;
       }
-      else 
+      else
       {
          /* alpha multiply */
          texmodecl1 = 0x00000000u;
@@ -530,7 +529,7 @@ d2_s32 d2_blitcopy( d2_device *handle, d2_s32 srcwidth, d2_s32 srcheight, d2_bli
 
    if( (d2_u16)dstwidth > D2_FIX4(1) )
    {
-      dxu = (d2_s32) ( ((d2_u32)D2_FIX16(sw)) / ((d2_u16)dstwidth) );     /* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/   
+      dxu = (d2_s32) ( ((d2_u32)D2_FIX16(sw)) / ((d2_u16)dstwidth) );     /* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
       u0  = dxu / 2;  /* offset by half a pixel step, as we sample in the center of our pixels */
    }
    if(dstheight > D2_FIX4(1))
@@ -553,11 +552,11 @@ d2_s32 d2_blitcopy( d2_device *handle, d2_s32 srcwidth, d2_s32 srcheight, d2_bli
 
    /* filtering: offset by -1/2 texel compared to nearest neighbour, to position the 2x2 kernel correctly */
    if(0 != (flags & d2_bf_filteru))
-   {  
+   {
       u0 -= D2_FIX16(1)/2;     /* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
    }
    if(0 != (flags & d2_bf_filterv))
-   {  
+   {
       v0 -= D2_FIX16(1)/2;     /* PRQA S 4131 */ /* $Misra: #PERF_ARITHMETIC_SHIFT_LEFT $*/
    }
 
@@ -583,39 +582,39 @@ d2_s32 d2_blitcopy( d2_device *handle, d2_s32 srcwidth, d2_s32 srcheight, d2_bli
    /* restore from stack */
    if(backup_context && (0 == (d2_bf_no_blitctxbackup & flags)))
    {
-      ctx->fillmode        = backup_context->fillmode;       
-      ctx->internaldirty   = backup_context->internaldirty;  
-      ctx->features        = backup_context->features;       
-      ctx->texcenterx      = backup_context->texcenterx;     
-      ctx->texcentery      = backup_context->texcentery;     
-      ctx->tbstylemask     = backup_context->tbstylemask;    
-      ctx->texbpp          = backup_context->texbpp;         
-      ctx->texwrapmask     = backup_context->texwrapmask;    
-      ctx->texmodemask     = backup_context->texmodemask;    
-      ctx->texmode         = backup_context->texmode;        
-      ctx->texpitch        = backup_context->texpitch;       
-      ctx->texwidth        = backup_context->texwidth;       
-      ctx->texheight       = backup_context->texheight;      
-      ctx->texbase         = backup_context->texbase;        
-      ctx->texsubppb       = backup_context->texsubppb;      
-      ctx->rlebpp          = backup_context->rlebpp;         
-      ctx->rlemask         = backup_context->rlemask;        
-      ctx->clutmask        = backup_context->clutmask;       
-      ctx->cr2mask         = backup_context->cr2mask;        
-      ctx->texmodecl[0]    = backup_context->texmodecl[0];   
-      ctx->texmodecl[1]    = backup_context->texmodecl[1];   
-      ctx->texlim[0].x1    = backup_context->texlim[0].x1;   
-      ctx->texlim[0].y1    = backup_context->texlim[0].y1;   
+      ctx->fillmode        = backup_context->fillmode;
+      ctx->internaldirty   = backup_context->internaldirty;
+      ctx->features        = backup_context->features;
+      ctx->texcenterx      = backup_context->texcenterx;
+      ctx->texcentery      = backup_context->texcentery;
+      ctx->tbstylemask     = backup_context->tbstylemask;
+      ctx->texbpp          = backup_context->texbpp;
+      ctx->texwrapmask     = backup_context->texwrapmask;
+      ctx->texmodemask     = backup_context->texmodemask;
+      ctx->texmode         = backup_context->texmode;
+      ctx->texpitch        = backup_context->texpitch;
+      ctx->texwidth        = backup_context->texwidth;
+      ctx->texheight       = backup_context->texheight;
+      ctx->texbase         = backup_context->texbase;
+      ctx->texsubppb       = backup_context->texsubppb;
+      ctx->rlebpp          = backup_context->rlebpp;
+      ctx->rlemask         = backup_context->rlemask;
+      ctx->clutmask        = backup_context->clutmask;
+      ctx->cr2mask         = backup_context->cr2mask;
+      ctx->texmodecl[0]    = backup_context->texmodecl[0];
+      ctx->texmodecl[1]    = backup_context->texmodecl[1];
+      ctx->texlim[0].x1    = backup_context->texlim[0].x1;
+      ctx->texlim[0].y1    = backup_context->texlim[0].y1;
       ctx->texlim[0].xadd2 = backup_context->texlim[0].xadd2;
       ctx->texlim[0].yadd2 = backup_context->texlim[0].yadd2;
-      ctx->texlim[0].xadd  = backup_context->texlim[0].xadd; 
-      ctx->texlim[0].yadd  = backup_context->texlim[0].yadd; 
-      ctx->texlim[1].xadd  = backup_context->texlim[1].xadd; 
-      ctx->texlim[1].yadd  = backup_context->texlim[1].yadd; 
+      ctx->texlim[0].xadd  = backup_context->texlim[0].xadd;
+      ctx->texlim[0].yadd  = backup_context->texlim[0].yadd;
+      ctx->texlim[1].xadd  = backup_context->texlim[1].xadd;
+      ctx->texlim[1].yadd  = backup_context->texlim[1].yadd;
    }
    else
    {
-      (void)d2_setfillmode( handle, fillmode_b); 
+      (void)d2_setfillmode( handle, fillmode_b);
    }
 
 #endif

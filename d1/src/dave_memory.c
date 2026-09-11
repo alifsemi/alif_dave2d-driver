@@ -20,9 +20,13 @@
 #include <string.h>
 #ifdef __ZEPHYR__
 #include <zephyr/cache.h>
+#include <soc_memory_map.h>
 #else
 #include "RTE_Components.h"
 #include CMSIS_device_header
+#ifndef SYSTEM_UTILS_H
+#include "sys_utils.h"
+#endif
 #endif
 
 #include "dave_cfg.h"
@@ -74,7 +78,7 @@ int d1_queryarchitecture( d1_device *handle )
 {
     (void) handle;
 
-    return d1_ma_unified;
+    return d1_ma_mapped;
 }
 
 static inline void d1_setcachectl(long flags, long bits)
@@ -146,9 +150,17 @@ int d1_cacheflush( d1_device *handle, int memtype )
 void * d1_maptovidmem( d1_device *handle, void *ptr )
 {
     (void) handle;
-    (void) ptr;
 
-    return NULL;
+    if (ptr == NULL)
+    {
+        return NULL;
+    }
+
+#ifdef __ZEPHYR__
+    return (void *)local_to_global(ptr);
+#else
+    return (void *)LocalToGlobal((void *)ptr);
+#endif
 }
 
 //--------------------------------------------------------------------------
@@ -156,9 +168,17 @@ void * d1_maptovidmem( d1_device *handle, void *ptr )
 void * d1_mapfromvidmem( d1_device *handle, void *ptr )
 {
     (void) handle;
-    (void) ptr;
 
-    return NULL;
+    if (ptr == NULL)
+    {
+        return NULL;
+    }
+
+#ifdef __ZEPHYR__
+    return (void *)global_to_local(ptr);
+#else
+    return (void *)GlobalToLocal((uint32_t)ptr);
+#endif
 }
 
 //--------------------------------------------------------------------------

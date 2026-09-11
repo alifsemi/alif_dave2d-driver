@@ -27,7 +27,6 @@
 #include "dave_intern.h"
 #include "dave_viewport.h"
 #include "dave_dlist.h"
-#include "dave_base.h"
 
 /*--------------------------------------------------------------------------
  * Group: Clipping
@@ -198,15 +197,13 @@ d2_s32 d2_framebuffer( d2_device *handle, void *ptr, d2_s32 pitch, d2_u32 width,
 {
    d2_contextdata *ctx;
 
-   ptr = d1_localtoglobal(ptr);
-
    D2_VALIDATE( handle, D2_INVALIDDEVICE );       /* PRQA S 4130, 3112, 3453 */ /* $Misra: #DEBUG_MACRO $*/
    D2_CHECKERR( ptr, D2_NOVIDEOMEM );             /* PRQA S 4130, 3112, 3453 */ /* $Misra: #DEBUG_MACRO $*/
    D2_CHECKERR( width  > 1, D2_VALUETOOSMALL );   /* PRQA S 4130, 3112, 3453 */ /* $Misra: #DEBUG_MACRO $*/
    D2_CHECKERR( height > 1, D2_VALUETOOSMALL );   /* PRQA S 4130, 3112, 3453 */ /* $Misra: #DEBUG_MACRO $*/
 
    /* use new parameters */
-   D2_DEV(handle)->framebuffer = ptr;
+   D2_DEV(handle)->framebuffer = d1_maptovidmem(D2_DEV(handle)->hwid, ptr);
    D2_DEV(handle)->fbformat    = format;
    D2_DEV(handle)->pitch       = pitch;
    D2_DEV(handle)->fbwidth     = width;
