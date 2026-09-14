@@ -19,7 +19,7 @@
  *                                   d2_preparedlist_read_intern()
  *  2007-08-29 ASc  - changed g_d1refcount and g_d1handle to static variables
  *                    removed tabs, changed C++ to C comments
- *  2010-11-25 MRe  - fixed d2hw_acquire for multiple calls in case of 
+ *  2010-11-25 MRe  - fixed d2hw_acquire for multiple calls in case of
  *                    multithreading
  *  2011-02-07 SSt  - moved instance management for multithreading to d1 driver
  *  2012-09-25 BSp  - MISRA cleanup

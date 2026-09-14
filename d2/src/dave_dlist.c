@@ -23,7 +23,7 @@
  * 2007-10-23 CSe  - added dynamic shrinking of display list
  * 2008-01-14 ASc  - changed comments from C++ to C, removed tabs
  * 2008-08-21 MRe  - fixed dynamic shrinking for low_localmem
- * 2010-07-08 MRe  - fixed support for register caching defined by D2_USEREGCACHE 
+ * 2010-07-08 MRe  - fixed support for register caching defined by D2_USEREGCACHE
  *                    new device flag d2_df_no_registercaching
  * 2011-02-07 SSt  - ensure a flush for all dlist ends (needed for multithreading)
  * 2011-02-28 SSt  - fixed while loop
@@ -48,7 +48,6 @@
 #include "dave_intern.h"
 #include "dave_dlist.h"
 #include "dave_memory.h"
-#include "dave_base.h"
 
 
 #define D2_EXECUTE_DLIST_NEEDWAIT defined
@@ -70,7 +69,7 @@ d2_dlist_block * d2_alloc_dlistblock_intern( const d2_device *handle, d2_u32 siz
    /* get controlling block structure */
    dlb = (d2_dlist_block*) d2_getmem_p( sizeof(d2_dlist_block) );
 
-   if(NULL == dlb) 
+   if(NULL == dlb)
    {
       return NULL;
    }
@@ -80,10 +79,10 @@ d2_dlist_block * d2_alloc_dlistblock_intern( const d2_device *handle, d2_u32 siz
    dlb->jump   = NULL;
 
    /* get block data */
-   if(0 == (D2_DEV(handle)->flags & d2_df_no_dlist)) 
+   if(0 == (D2_DEV(handle)->flags & d2_df_no_dlist))
    {
       dlb->block = (d2_dlist_entry*) d2_getmem_d( handle, sizeof(d2_dlist_entry) * size );
-   } 
+   }
    else
    {
       dlb->block = (d2_dlist_entry*) d2_getmem_p( sizeof(d2_dlist_entry) * size );
@@ -97,7 +96,7 @@ d2_dlist_block * d2_alloc_dlistblock_intern( const d2_device *handle, d2_u32 siz
    }
 
    dlb->vidmem = NULL;
-   if(0 == (D2_DEV(handle)->flags & d2_df_no_dlist) ) 
+   if(0 == (D2_DEV(handle)->flags & d2_df_no_dlist) )
    {
       if(0 != (D2_DEV(handle)->hwmemarchitecture & d1_ma_mapped))
       {
@@ -131,7 +130,7 @@ void d2_free_dlistblock_intern( const d2_device *handle, d2_dlist_block *data )
    while(NULL != data)
    {
       n = data->next;
-      if(0 == (D2_DEV(handle)->flags & d2_df_no_dlist)) 
+      if(0 == (D2_DEV(handle)->flags & d2_df_no_dlist))
       {
           d2_freemem_d( handle, data->block );
       }
@@ -200,7 +199,7 @@ d2_s32 d2_initdlist_intern( d2_device *handle, d2_dlist *dlist, d2_u32 initialsi
 
       dlist->vidmem_blocks = d2_getmem_p(sizeof(d2_dlist_vidmem_blocks));
 
-      if(NULL == dlist->vidmem_blocks) 
+      if(NULL == dlist->vidmem_blocks)
       {
          return 0;
       }
@@ -224,7 +223,7 @@ d2_s32 d2_initdlist_intern( d2_device *handle, d2_dlist *dlist, d2_u32 initialsi
          vmem_blocks->currentblock = vmem_blocks->blocks;
          /* allocate first block in vidmem */
          vmem_blocks->blocks[0] = d1_allocvidmem(D2_DEV(handle)->hwid, d1_mem_dlist, sizeof(d2_dlist_entry) * vmem_blocks->block_size);
-         if(NULL == vmem_blocks->blocks[0]) 
+         if(NULL == vmem_blocks->blocks[0])
          {
             return 0;
          }
@@ -239,7 +238,7 @@ d2_s32 d2_initdlist_intern( d2_device *handle, d2_dlist *dlist, d2_u32 initialsi
    }
    dlist->resumeblock = dlist->firstblock;
 
-   if(NULL == dlist->firstblock) 
+   if(NULL == dlist->firstblock)
    {
       return 0;
    }
@@ -253,7 +252,7 @@ d2_s32 d2_initdlist_intern( d2_device *handle, d2_dlist *dlist, d2_u32 initialsi
 
    dlist->dlist_addresses_max = DLIST_ADRESSES_NUMBER;
    dlist->dlist_addresses     = d2_getmem_p(DLIST_ADRESSES_NUMBER*sizeof(d2_s32*));
-   if(NULL == dlist->dlist_addresses) 
+   if(NULL == dlist->dlist_addresses)
    {
       return 0;
    }
@@ -335,7 +334,7 @@ void d2_nextdlistblock_intern( d2_dlist *dlist )
          return;
       }
       /* insert next block address (fix jump) */
-      *patch = (d2_s32) d1_localtoglobal(dlist->currentblock->block);
+      *patch = (d2_s32) dlist->currentblock->block;
    }
    else if ((dlist->blocksize < 1) || (vidmemBlocks->slicesleft == 1))
    { /* 'low localmem' mode: the spare block for the jump is only needed in last slice */
@@ -400,16 +399,16 @@ void d2_nextdlistblock_intern( d2_dlist *dlist )
             vidmemBlocks->currentaddress = *nextblock;
             vidmemBlocks->slicesleft     = vidmemBlocks->num_slices;
          }
-      } 
-      else if ( (1 == vidmemBlocks->blocksleft) && (1 == vidmemBlocks->slicesleft) ) 
+      }
+      else if ( (1 == vidmemBlocks->blocksleft) && (1 == vidmemBlocks->slicesleft) )
       {
-         D2_DEV(dlist->device)->delayed_errorcode = D2_NOT_ENOUGH_DLISTBLOCKS;      
+         D2_DEV(dlist->device)->delayed_errorcode = D2_NOT_ENOUGH_DLISTBLOCKS;
       }
       else
       {
          /* empty else block to satisfy MISRA rule 14.10/2004 */
       }
-    
+
       d2_growdlist_intern( dlist );  /* go to next dlist buffer in ring */
 
       /* check if d2_growdlist succeded */
@@ -458,7 +457,7 @@ void d2_paddlist_intern( d2_dlist *dlist )
          pos->address.mask |= 0x80000000u;
          dlist->position = (d2_dlist_entry *) ((d2_s32*)pos + 4);
          break;
-         
+
       default:
          break;
    }
@@ -550,13 +549,13 @@ void* d2_preparedlist_read_intern( const d2_device *handle, d2_dlist *dlist, d2_
       /* low_local_memory_mode */
       if(0 != reset)
       {
-         (void)d1_copytovidmem( d2_level1interface(dlist->device), 
+         (void)d1_copytovidmem( d2_level1interface(dlist->device),
                                 dlist->vidmem_blocks->currentaddress,
-                                dlist->currentblock->block, 
-                                (d2_u32)(sizeof(d2_dlist_entry) * (dlist->currentblock->quantity - dlist->blocksize)), 
+                                dlist->currentblock->block,
+                                (d2_u32)(sizeof(d2_dlist_entry) * (dlist->currentblock->quantity - dlist->blocksize)),
                                 0
                                 );
-      } 
+      }
       /* if !reset then d1_copytovidmem is done below by d2_nextdlistblock_intern */
    }
    else if(0 != (D2_DEV(handle)->hwmemarchitecture & d1_ma_separated))
@@ -638,8 +637,8 @@ d2_u32 d2_executedlist_intern( const d2_device *handle, d2_dlist_entry *block )
             {
                /* catch special case of display list jump */
                return argument;
-            } 
-            else 
+            }
+            else
             {
                /* normal rewrite */
                a1 = adrmask & 0xffu;
@@ -670,8 +669,8 @@ d2_u32 d2_executedlist_intern( const d2_device *handle, d2_dlist_entry *block )
 #endif /* D2_EXECUTE_DLIST_NEEDWAIT */
 
                   bEOL = 1;
-               } 
-               else 
+               }
+               else
                {
                   /* terminate */
                   return argument;
@@ -755,21 +754,21 @@ d2_u32 d2_executedlist_intern( const d2_device *handle, d2_dlist_entry *block )
 #ifdef D2_EXECUTE_DLIST_NEEDWAIT
                   d2hw_wait(id);
 #endif /* D2_EXECUTE_DLIST_NEEDWAIT */
-               } 
-               else 
+               }
+               else
                {
                   /* terminate */
                   return argument;
                }
-            } 
-            else 
+            }
+            else
             {
                /* invalid case, no index used */
                block = (d2_dlist_entry*) ((d2_s32*)block + 1);
             }
          }
-      } 
-      else 
+      }
+      else
       {
          /* contains simple indices only */
          a1 = adrmask & 0xffu;
@@ -895,7 +894,7 @@ void d2_scratch2dlist_intern( d2_device *handle )
          {
             if(0 != d2_cacheableregs[regIdx])
             {
-               if( (0 != cache_valid[regIdx]) && ( cache_data[regIdx] == val ) ) 
+               if( (0 != cache_valid[regIdx]) && ( cache_data[regIdx] == val ) )
                {
                   bSkip = 1;
                }
@@ -938,8 +937,8 @@ void d2_scratch2dlist_intern( d2_device *handle )
 
       dlist->tagindex = tagIndex;
       cnt = 0;
-   } 
-   else 
+   }
+   else
 #endif
    {
       dlist->count += cnt;
@@ -976,7 +975,7 @@ void d2_scratch2dlist_intern( d2_device *handle )
                dlist->tagindex = tagIndex;
                dlist->position++;
                dlist->blocksize--;
-               if(dlist->blocksize <= 1) 
+               if(dlist->blocksize <= 1)
                {
                   d2_nextdlistblock_intern( dlist );
                }
@@ -1004,7 +1003,7 @@ void d2_scratch2dlist_intern( d2_device *handle )
                /* finish entry */
                dlist->position++;
                dlist->blocksize--;
-               if ( dlist->blocksize <= 1 ) 
+               if ( dlist->blocksize <= 1 )
                {
                   d2_nextdlistblock_intern( dlist );
                }
@@ -1068,7 +1067,7 @@ static d2_s32 d2_dlist2dlist_intern( d2_device *handle, d2_dlist *dlist, void *a
       /* finish entry */
       dlist->position++;
       dlist->blocksize--;
-      if(dlist->blocksize <= 1) 
+      if(dlist->blocksize <= 1)
       {
          d2_nextdlistblock_intern( dlist );
       }
@@ -1243,7 +1242,7 @@ void d2_clear_dlistlist_intern( const d2_device *handle, d2_dlist *dlist )
 }
 
 /*--------------------------------------------------------------------------
- * Add an address to the list of dlist start addresses. */
+ * Add a hardware address to the list of dlist start addresses. */
 d2_s32* d2_add_dlistlist_intern( const d2_device *handle, d2_dlist *dlist, const void *dlistaddress )
 {
    d2_s32 i, pos;
@@ -1265,7 +1264,7 @@ d2_s32* d2_add_dlistlist_intern( const d2_device *handle, d2_dlist *dlist, const
       }
    }
 
-   dlist_list[pos] = (d2_s32)d1_localtoglobal(dlistaddress);
+   dlist_list[pos] = (d2_s32)dlistaddress;
    dlist->dlist_addresses_cur = (d2_s16) (pos + 1);
 
    return &dlist_list[pos];
@@ -1274,28 +1273,27 @@ d2_s32* d2_add_dlistlist_intern( const d2_device *handle, d2_dlist *dlist, const
 /*------------------------------------------------------------------------
  * function: d2_executedlist
  *
- * Execute an already prepared display list. 
- * A display list (Dlist) can be created e.g. by <d2_dumprenderbuffer>.  
+ * Execute an already prepared display list.
+ * A display list (Dlist) can be created e.g. by <d2_dumprenderbuffer>.
  *
  * Basically the address will be sent to D/AVE and will be executed immediately.
- * So the dlist address must be accessible by the GPU and 
- * it is in the application's responsibility to prepare the Dlist
- * correctly.
- * 
- * d2_executedlist must not be called while D/AVE is busy rendering
- * (see: <Render Buffers>). 
+ * The address is expected to be CPU-visible; it is translated for GPU access
+ * by the driver before execution.
  *
- * Note: 
+ * d2_executedlist must not be called while D/AVE is busy rendering
+ * (see: <Render Buffers>).
+ *
+ * Note:
  * This has no influence on the render buffer mechanism. The
  * driver will manage cooperation of render buffers and Dlists.
  *
- * Note: 
- * In case d2_opendevice was called with d2_df_no_dlist address must 
+ * Note:
+ * In case d2_opendevice was called with d2_df_no_dlist address must
  * be accessible by the CPU.
  *
  * parameters:
  *   handle  - device pointer (see: <d2_opendevice>)
- *   address - Address of the Dlist (must be accessible by the GPU)
+ *   address - CPU-visible address of the Dlist
  *   flags   - reserved (set to 0)
  *
  *
@@ -1306,7 +1304,6 @@ d2_s32 d2_executedlist( d2_device *handle, const void *address, d2_u32 flags )
 {
    d2_devicedata *dev = D2_DEV(handle);
    d2_dlist  dlist;
-   d2_s32 *dlist_list;
    (void) flags; /* PRQA S 3112 */ /*$Misra: #COMPILER_WARNING $*/
 
    D2_VALIDATE( handle,  D2_INVALIDDEVICE ); /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
@@ -1316,10 +1313,6 @@ d2_s32 d2_executedlist( d2_device *handle, const void *address, d2_u32 flags )
    dlist.dlist_addresses     = dev->dlist_list_single;
    dlist.dlist_addresses_max = 2;
    dlist.dlist_addresses_cur = 1;
-
-   dlist_list = (d2_s32 *)dlist.dlist_addresses;
-   dlist_list[0] = (d2_s32)address;
-   dlist_list[1] = 0;
 
    /* start dlist execution */
    d2hw_start(handle, &dlist, 1);
@@ -1331,7 +1324,7 @@ d2_s32 d2_executedlist( d2_device *handle, const void *address, d2_u32 flags )
  * function: d2_adddlist
  *
  * Add an already prepared display list to the current render buffer.
- * A display list (Dlist) can be created e.g. by <d2_dumprenderbuffer>.  
+ * A display list (Dlist) can be created e.g. by <d2_dumprenderbuffer>.
  *
  * Depending on the flags, the Dlist will be added to the current
  * render buffer by copying its content or by adding 'call' operations
@@ -1340,22 +1333,22 @@ d2_s32 d2_executedlist( d2_device *handle, const void *address, d2_u32 flags )
  * If a 'postprocess' rendermode is active the layers are merged before
  * the Dlist is added (see: <d2_selectrendermode>).
  *
- * Note: 
+ * Note:
  * If d2_al_no_copy is selected, the GPU must be able to select the
- * specified address, in case if d2_al_copy the CPU must be able to 
+ * specified address, in case if d2_al_copy the CPU must be able to
  * access the Dlist.
  *
- * Note: 
+ * Note:
  * For the mode d2_al_no_copy the low level driver must support the handling
- * of lists of Dlist start addresses (see: <d2_level1interface> and 
+ * of lists of Dlist start addresses (see: <d2_level1interface> and
  * low level device <D1 Display list handling at ../../../driver_l1/files/doc/d1_dlistindirect-txt.html>).
- * 
+ *
  * If this handling is not supported then no Dlists can be added in this mode.
  *
  * parameters:
  *   handle  - device pointer (see: <d2_opendevice>)
- *   address - Address of the Dlist 
- *            (in case of d2_al_no_copy must be accessible by the GPU 
+ *   address - Address of the Dlist
+ *            (in case of d2_al_no_copy must be accessible by the GPU
  *             in case of d2_al_no_copy must be accessible by CPU)
  *   size    - size of Dlist
  *   flags   - d2_al_copy, d2_al_no_copy
@@ -1372,7 +1365,7 @@ d2_s32 d2_executedlist( d2_device *handle, const void *address, d2_u32 flags )
  *   <d2_dumprenderbuffer>, <d2_getrenderbuffersize>, <d2_relocateframe>
  * */
 d2_s32 d2_adddlist( d2_device *handle, void *address, d2_s32 size, d2_u32 flags )
-{  
+{
    d2_devicedata *dev   = D2_DEV(handle);
    d2_dlist      *dlist;
    void          *current_dlist_start;
@@ -1401,7 +1394,7 @@ d2_s32 d2_adddlist( d2_device *handle, void *address, d2_s32 size, d2_u32 flags 
    }
    else
    {
-      if( (0 != dev->dlist_indirect_supported) && (0 == (dev->flags & d2_df_no_dlist)) ) 
+      if( (0 != dev->dlist_indirect_supported) && (0 == (dev->flags & d2_df_no_dlist)) )
       {
          current_dlist_start = d2_preparedlist_read_intern( handle, dlist, 0 );
 

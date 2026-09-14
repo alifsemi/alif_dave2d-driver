@@ -8,7 +8,7 @@
  *
  * Changes:
  *  2006-03-08 CSe  added argb1555 format
- *  2007-09-20 ASc  rem. C++ comments, fixed d2_settexturemapping params 
+ *  2007-09-20 ASc  rem. C++ comments, fixed d2_settexturemapping params
  *  2008-04-30 MRe  added RLE and subbyte formats
  *  2008-06-12 MRe  added CLUT256 and color keying
  *  2011-06-16 MRe  added Alpha4, Alpha2, Alpha1 texture formats
@@ -30,7 +30,6 @@
 #include "dave_driver.h"
 #include "dave_intern.h"
 #include "dave_texture.h"
-#include "dave_base.h"
 
 
 /*--------------------------------------------------------------------------
@@ -111,8 +110,6 @@ d2_s32 d2_settexture( d2_device *handle, void *ptr, d2_s32 pitch, d2_s32 width, 
    D2_CHECKERR( width >= 0, D2_VALUENEGATIVE );     /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
    D2_CHECKERR( height >= 0, D2_VALUENEGATIVE );    /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
 
-   ptr = d1_localtoglobal(ptr);
-
    ctx = D2_DEV(handle)->ctxselected;
    ctx->internaldirty |= d2_dirty_material;
    ctx->texpitch = pitch;
@@ -131,15 +128,15 @@ d2_s32 d2_settexture( d2_device *handle, void *ptr, d2_s32 pitch, d2_s32 width, 
       D2_RETERR( handle, D2_ILLEGALMODE );
    }
 
-   if( 
+   if(
       (
          (d2_mode_alpha4 == format_noflags)  ||
          (d2_mode_alpha2 == format_noflags)  ||
-         (d2_mode_alpha1 == format_noflags) 
+         (d2_mode_alpha1 == format_noflags)
        )
       && (
-         (0 == (D2_DEV(handle)->hwrevision & D2FB_SWDAVE)) && 
-         ((D2_DEV(handle)->hwrevision & 0xffu) < 0x0au) 
+         (0 == (D2_DEV(handle)->hwrevision & D2FB_SWDAVE)) &&
+         ((D2_DEV(handle)->hwrevision & 0xffu) < 0x0au)
           )
        )
    {
@@ -303,13 +300,13 @@ d2_s32 d2_settexture( d2_device *handle, void *ptr, d2_s32 pitch, d2_s32 width, 
       ctx->clutmask &= ~D2C_CLUT_ENABLE;
    }
 
-   ctx->cr2mask = 
-      D2_DEV(handle)->fbstylemask | 
-      ctx->blendmask              | 
-      ctx->tbstylemask            | 
-      ctx->alphablendmask         | 
-      ctx->rlemask                | 
-      ctx->clutmask               | 
+   ctx->cr2mask =
+      D2_DEV(handle)->fbstylemask |
+      ctx->blendmask              |
+      ctx->tbstylemask            |
+      ctx->alphablendmask         |
+      ctx->rlemask                |
+      ctx->clutmask               |
       ctx->colkeymask;
 
    ctx->internaldirty |= d2_dirty_texlim;
@@ -489,7 +486,7 @@ d2_s32 d2_settexopparam( d2_device *handle, d2_u32 index, d2_u32 p1, d2_u32 p2 )
 #ifndef _DEBUG
    D2_VALIDATE( handle, D2_INVALIDDEVICE );   /* PRQA S 4130, 3112 */ /* $Misra: #DEBUG_MACRO $*/
 #endif /* _DEBUG */
-   
+
    if(NULL != handle)
    {
       d2_alpha ap1, ap2;
@@ -615,7 +612,7 @@ d2_s32 d2_settexelcenter( d2_device *handle, d2_point x, d2_point y )
  * For indexed texture formats (see: <d2_settexture>), a colour look-up table
  * is used. This function registers a pointer to a ARGB CLUT (32 bit values, format 0xAARRGGBB)
  * with the current context. The size of the CLUT must be 16 resp. 256 words (see note).
- * 
+ *
  * The pointer needs to be persistent, as the table is not immediately copied to the context.
  * It is read once before the next object using textures is rendered or if <d2_settexclut_part> is used.
  * If the CLUT is changed later on, d2_settexclut has to be called again to trigger a new
@@ -654,10 +651,10 @@ d2_s32 d2_settexclut( d2_device *handle, d2_color* clut )
    if(NULL == clut)
    {
       D2_DEV(handle)->ctxselected->texclutupload = 0;
-      
+
       if(NULL != D2_DEV(handle)->ctxselected->texclut_cached)
       {
-         d1_freemem(D2_DEV(handle)->ctxselected->texclut_cached);  
+         d1_freemem(D2_DEV(handle)->ctxselected->texclut_cached);
          D2_DEV(handle)->ctxselected->texclut_cached = NULL;
       }
    }
@@ -667,7 +664,7 @@ d2_s32 d2_settexclut( d2_device *handle, d2_color* clut )
       {
          clut_entries = MAX_CLUT256_ENTRIES;
       }
-      else 
+      else
       {
          clut_entries = MAX_CLUT16_ENTRIES;
       }
@@ -686,7 +683,7 @@ d2_s32 d2_settexclut( d2_device *handle, d2_color* clut )
 
    D2_RETOK( handle );
 }
- 
+
 /*--------------------------------------------------------------------------
  * function: d2_settexclut_part
  * Set a part of the color lookup table.
@@ -746,7 +743,7 @@ d2_s32 d2_settexclut_part( d2_device *handle, const d2_color* clut_part, d2_u32 
    if(NULL == *pclut_cached)
    {
       /* allocate the CLUT cache */
-      *pclut_cached = (d2_color*)d1_allocmem(max_index * sizeof(d2_color));   
+      *pclut_cached = (d2_color*)d1_allocmem(max_index * sizeof(d2_color));
 
       if(NULL == *pclut_cached)
       {
@@ -856,7 +853,7 @@ d2_s32 d2_writetexclut_direct( d2_device *handle, const d2_color* clut_part, d2_
  * Set index offset for indexed texture formats.
  *
  * For the indexed texture formats d2_mode_i4, d2_mode_i2 and d2_mode_i1 (see: <d2_settexture>)
- * an offset to the color index can be used. 
+ * an offset to the color index can be used.
  *
  * The offset is an 8 bit resp. 4 bit value (if feature bit D2FB_TEXCLUT256 = 1 resp. = 0 (see <d2_getrevisionhw>))
  *
@@ -898,8 +895,8 @@ d2_s32 d2_settexclut_offset( d2_device *handle, d2_u32 offset )
  * function: d2_settexclut_format
  * Set color format of texture CLUT.
  *
- * The Color lookup table has 256 entries of 32 bit color values. Each color value is coded as ARGB8888. 
- * In case of RGB565 the CLUT 256x32bit is divided into a lower and an upper part for 256 16bit color entries. 
+ * The Color lookup table has 256 entries of 32 bit color values. Each color value is coded as ARGB8888.
+ * In case of RGB565 the CLUT 256x32bit is divided into a lower and an upper part for 256 16bit color entries.
  * One 32bit word contains two successive 16bit color entries.
  * The lower 16 bit contain the first color entry and the upper 16 bit contain the next color entry.
  * The upper part of the CLUT can be accessed by the texture unit by setting the texclut_offset to 0x80.
@@ -958,7 +955,7 @@ d2_s32 d2_settexclut_format( d2_device *handle, d2_u32 format )
  * parameters:
  *   handle - device pointer (see: <d2_opendevice>)
  *   enable - enables color keying
- *   color_key  - RGB value of color key 
+ *   color_key  - RGB value of color key
  *
  * returns:
  *   errorcode (D2_OK if successfull) see list of <Errorcodes> for details
@@ -1252,7 +1249,7 @@ static D2_INLINE void d2_textureoperator( const d2_contextdata *ctx, d2_u32 inde
       case d2_to_blend:
          *c1 = ctx->texop_p1[index]; *c2 = ctx->texop_p2[index];
          break;
-         
+
       default:
          break;
    }
