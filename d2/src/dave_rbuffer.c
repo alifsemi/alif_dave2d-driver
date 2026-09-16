@@ -16,7 +16,7 @@
  *  2007-12-11 ASc  fix d2_relocateframe: flush scratch buffer
  *  2007-12-12 ASc  add buffer argument check in d2_freedumpedbuffer
  *                  add d2_getrenderbuffersize function
- *  2008-01-14 ASc  changed comments from C++ to C, removed tabs 
+ *  2008-01-14 ASc  changed comments from C++ to C, removed tabs
  *  2009-03-06 LBe  added flag in d2_executerenderbuffer to keep dlist for multiple execution
  *  2011-03-10 MRe  fixed delayed error handling in d2_executerenderbuffer
  *  2012-01-26 MRe  fixed flushing of renderbuffer when a new one is selected
@@ -57,8 +57,8 @@
  * (end code)
  *
  * selectrenderbuffer / executerenderbuffer / flushframe:
- * Render buffers can also be managed by the application. Use <d2_newrenderbuffer> to 
- * allocate a new render buffer. To issue render commands a render buffer must be 
+ * Render buffers can also be managed by the application. Use <d2_newrenderbuffer> to
+ * allocate a new render buffer. To issue render commands a render buffer must be
  * selected by <d2_selectrenderbuffer>. A render buffer can then be executed by
  * <d2_executerenderbuffer>. Before <d2_executerenderbuffer> can be called again
  * the application has to wait for Dave to be finished by <d2_flushframe>.
@@ -73,12 +73,12 @@
  * (end code)
  *
  * Using a single render buffer:
- * 
- * Please note that when using just a single render buffer (no double-buffering) 
- * the allocated buffer can not be freed as long as it is selected because the 
- * buffer will be linked for internal usage. This means that another call of 
- * <d2_selectrenderbuffer> must be issued with a second buffer to de-select the 
- * previous buffer to avoid memory leaks. 
+ *
+ * Please note that when using just a single render buffer (no double-buffering)
+ * the allocated buffer can not be freed as long as it is selected because the
+ * buffer will be linked for internal usage. This means that another call of
+ * <d2_selectrenderbuffer> must be issued with a second buffer to de-select the
+ * previous buffer to avoid memory leaks.
  *
  * (start code)
  * buffer = d2_newrenderbuffer(handle, 25, 25);
@@ -91,15 +91,15 @@
  * d2_freerenderbuffer(handle, buffer);
  * (end code)
  *
- * If no second render buffer is available and only a single render buffer 
- * should be used the following two commands have to be called before creating 
+ * If no second render buffer is available and only a single render buffer
+ * should be used the following two commands have to be called before creating
  * any render buffer. This will prevent internal buffer linkage!
- * 
+ *
  * (start code)
  * // close internal render buffer 0
- * d2_executerenderbuffer(locD2DHandle,d2_getrenderbuffer(locD2DHandle, 0), 0); 
+ * d2_executerenderbuffer(locD2DHandle,d2_getrenderbuffer(locD2DHandle, 0), 0);
  * // close internal render buffer 1
- * d2_executerenderbuffer(locD2DHandle,d2_getrenderbuffer(locD2DHandle, 1), 0); 
+ * d2_executerenderbuffer(locD2DHandle,d2_getrenderbuffer(locD2DHandle, 1), 0);
  * ...
  * buffer = d2_newrenderbuffer(handle, 25, 25);
  * d2_selectrenderbuffer(handle, buffer);
@@ -108,7 +108,7 @@
  * d2_freerenderbuffer(handle, buffer); // free a selected buffer
  * (end code)
  *
- * However, it is recommended to use at least two render buffers, e.g. 
+ * However, it is recommended to use at least two render buffers, e.g.
  * <d2_startframe> and <d2_endframe>.
  *
  * executedlist:
@@ -121,7 +121,6 @@
 #include "dave_intern.h"
 #include "dave_memory.h"
 #include "dave_rbuffer.h"
-#include "dave_base.h"
 
 
 /*--------------------------------------------------------------------------*/
@@ -246,8 +245,8 @@ d2_renderbuffer * d2_newrenderbuffer( d2_device *handle, d2_u32 initialsize, d2_
  * can call <d2_flushframe>.
  *
  * note:
- * Please note that when using just a single render buffer (no double buffering) 
- * the allocated buffer can not be freed as long as it is selected (see above for 
+ * Please note that when using just a single render buffer (no double buffering)
+ * the allocated buffer can not be freed as long as it is selected (see above for
  * more details).
  *
  * parameters:
@@ -309,8 +308,8 @@ d2_s32 d2_freerenderbuffer( d2_device *handle,  d2_renderbuffer *buffer )
  *
  * For the usage of render buffers see <Render Buffers>.
  *
- * If buffer is 0 then the internal renderbuffer for writing will be selected, thus 
- * <d2_startframe>/<d2_endframe> can be continued to use 
+ * If buffer is 0 then the internal renderbuffer for writing will be selected, thus
+ * <d2_startframe>/<d2_endframe> can be continued to use
  * (see also <d2_getrenderbuffer>).
  *
  * parameters:
@@ -354,7 +353,7 @@ d2_s32 d2_selectrenderbuffer( d2_device *handle, d2_renderbuffer *buffer )
 
    /* reset list closed flag when selecting a render buffer */
    ((d2_rbuffer*)buffer)->closed = 0;
-   
+
    /* hard change of writelist */
    D2_DEV(handle)->selectedbuffer = D2_DRB(buffer);
    wlist = & D2_DRB(buffer)->baselist;
@@ -409,7 +408,7 @@ d2_s32 d2_selectrenderbuffer( d2_device *handle, d2_renderbuffer *buffer )
  *
  * Before rendering is started, the renderbuffer is prepared for execution. This
  * involves flushing of scratch buffers, possibly merge of layers in certain render modes (see <d2_selectrendermode>)
- * and potentially copying the display list to a dedicated video memory or at least flushing of the 
+ * and potentially copying the display list to a dedicated video memory or at least flushing of the
  * CPU data caches.
  * The buffer passed to d2_executerenderbuffer can be used for execution again by calling d2_executerenderbuffer
  * again with the same buffer as argument. But before new render commands can be written to the buffer
@@ -459,14 +458,14 @@ d2_s32 d2_executerenderbuffer( d2_device *handle, d2_renderbuffer *buffer, d2_u3
    {
       D2_RETERR( handle, D2_DEVICEBUSY );
    }
-   
+
    /* new read list */
    rlist = & D2_DRB( buffer )->baselist;
 
    /* start new list */
    rlist->busy = 1;
 
-   if(0 == D2_DRB(buffer)->closed ) 
+   if(0 == D2_DRB(buffer)->closed )
    {
       /* reset postprocessing mode if still active */
       if(d2_rm_postprocess == D2_DEV(handle)->rendermode)
@@ -649,10 +648,10 @@ d2_s32 d2_endframe( d2_device *handle )
  *
  *   This function can only be used when double word clearing is
  *   disabled (see: <d2_opendevice>) and 'low localmem' mode is not enabled
- *   (see: <d2_lowlocalmemmode>)! 
+ *   (see: <d2_lowlocalmemmode>)!
  *
  * note:
- *   If <d2_adddlist> (d2_al_no_copy) commands have been used these added 
+ *   If <d2_adddlist> (d2_al_no_copy) commands have been used these added
  *   dlists are not changed.
  *
  * */
@@ -662,11 +661,9 @@ extern d2_s32 d2_relocateframe( d2_device *handle, const void *ptr )
    d2_dlist_block *blk, *lastBlk;
    d2_dlist_entry *lastEntry;
    d2_s8 *         oldPtr;
-  
+
    D2_VALIDATE( handle, D2_INVALIDDEVICE );  /* PRQA S 3112 */ /* $Misra: #DEBUG_MACRO $*/
    D2_CHECKERR( ptr, D2_NOVIDEOMEM );        /* PRQA S 3112 */ /* $Misra: #DEBUG_MACRO $*/
-
-   ptr = d1_localtoglobal(ptr);
 
    d2_scratch2dlist_intern(handle);
 
@@ -686,7 +683,7 @@ extern d2_s32 d2_relocateframe( d2_device *handle, const void *ptr )
 
       lastEntry = (d2_dlist_entry*)((d2_s32*)entry + (blk->quantity*(sizeof(d2_dlist_entry)/sizeof(d2_s32))));  /* step through all entries in the block */
 
-      while(entry < lastEntry)  
+      while(entry < lastEntry)
       {
          adrmask = entry->address.mask;
 
@@ -730,25 +727,25 @@ extern d2_s32 d2_relocateframe( d2_device *handle, const void *ptr )
                      /* just a flush. keep on reading */
                      entry = (d2_dlist_entry*) ((d2_s32*)entry + 1);
                      /*continue;*/
-                  } 
+                  }
                   else
                   {   /* special bit 0 must be set */
                      /* terminate */
                      entry = lastEntry; /*break;*/
                   }
                }
-               else 
+               else
                {
                   if(D2_ORIGIN == (adrmask & 0xffu))
                   {
                      entry->value[0] = (d2_s32) (((d2_s8*)entry->value[0] - oldPtr) + (d2_s8*)ptr);
                   }
-                  
+
                   if((D2_ORIGIN<<8) == (adrmask & 0xff00u))
                   {
                      entry->value[1] = (d2_s32) (((d2_s8*)entry->value[1] - oldPtr) + (d2_s8*)ptr);
                   }
-                  
+
                   entry = (d2_dlist_entry*) ((d2_s32*)entry + 3);
                }
             }
@@ -862,7 +859,7 @@ extern d2_s32 d2_relocateframe( d2_device *handle, const void *ptr )
  *
  * note:
  *  d2_dumprenderbuffer does not work correctly if <d2_adddlist> (d2_al_no_copy)
- *  commands have been used. 
+ *  commands have been used.
  *  Use <d2_adddlist> (d2_al_copy) instead if you want to get dlists with the
  *  desired content.
  *
@@ -883,7 +880,7 @@ d2_s32 d2_dumprenderbuffer( d2_device *handle, d2_renderbuffer *buffer, void **r
    d2_s32           *writePtr;
    d2_dlist_block * blk, *lastBlk;
    d2_dlist_entry * write, *lastEntry;
- 
+
    D2_VALIDATE( handle, D2_INVALIDDEVICE );  /* PRQA S 3112 */ /* $Misra: #DEBUG_MACRO $*/
    D2_CHECKERR( buffer, D2_INVALIDBUFFER );  /* PRQA S 3112 */ /* $Misra: #DEBUG_MACRO $*/
    D2_CHECKERR( rdata, D2_NULLPOINTER );     /* PRQA S 3112 */ /* $Misra: #DEBUG_MACRO $*/
@@ -939,7 +936,7 @@ d2_s32 d2_dumprenderbuffer( d2_device *handle, d2_renderbuffer *buffer, void **r
          lastEntry = entry + blk->quantity;      /* full block: use end position */
       }
 
-      while(entry < lastEntry)  
+      while(entry < lastEntry)
       {
          adrmask = entry->address.mask;
 
@@ -960,7 +957,7 @@ d2_s32 d2_dumprenderbuffer( d2_device *handle, d2_renderbuffer *buffer, void **r
                {
                   /* catch special case of display list jump */
                   break; /* skip this block */
-               } 
+               }
                writePtr[0] = (d2_s32) entry->address.mask;
                writePtr[1] = entry->value[0];
                writePtr += 2;
@@ -1092,7 +1089,7 @@ d2_s32 d2_dumprenderbuffer( d2_device *handle, d2_renderbuffer *buffer, void **r
  * This function can only be used when 'low localmem' mode is not enabled (see: <d2_lowlocalmemmode>).
  *
  * note:
- *   If <d2_adddlist> (d2_al_no_copy) commands have been used these added 
+ *   If <d2_adddlist> (d2_al_no_copy) commands have been used these added
  *   dlists are not counted.
  *
  * parameters:
@@ -1120,7 +1117,7 @@ d2_u32 d2_getrenderbuffersize(d2_device *handle, d2_renderbuffer *rb)
    /* pad to next full entry */
    d2_paddlist_intern( dlist );
 
-   if(NULL != dlist->vidmem_blocks) 
+   if(NULL != dlist->vidmem_blocks)
    {
       used = dlist->count >> 2;
    }
