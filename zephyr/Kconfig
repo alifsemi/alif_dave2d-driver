@@ -39,6 +39,15 @@ config WITH_MM_DYNAMIC
 
 endchoice
 
+config D0_FIXED_RANGE_ALIGNMENT
+        int "Fixed-range allocator alignment"
+        default 128
+        range 4 4096
+        depends on D1_MALLOC_D0LIB && WITH_MM_FIXED_RANGE
+        help
+            Alignment in bytes for payloads allocated by the fixed-range
+            D0 memory manager. The value must be a power of two.
+
 config D1_DLIST_INDIRECT
     bool "Use DLIST indirect"
 

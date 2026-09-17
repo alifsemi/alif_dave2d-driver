@@ -28,7 +28,7 @@
 /******************************************************************************
  * memory allocater :
  *  - strategy: first fit
- *  - alignment : 4 bytes
+ *  - alignment : configurable, default set to 128 bytes
  *  - memory status is stored in the memory blocks
  *     B  : address of memory block
  *     B0 : ptr to the last block if the ptr is null it means that this block is free
@@ -57,8 +57,8 @@ typedef struct _memblk {
   unsigned int size;
 } memblk;
 
-/* the minimalsize of a datablock in bytes*/
-#define MINIMUM_BLOCKSIZE 4
+#define D0_FIXED_RANGE_ALIGNMENT_MASK (D0_FIXED_RANGE_ALIGNMENT - 1)
+#define MINIMUM_BLOCKSIZE (D0_FIXED_RANGE_ALIGNMENT - sizeof(memblk))
 
 /******************************************************************************
  * sets the memory range that shall be used as heap
@@ -71,12 +71,15 @@ void d0_fixed_range_setheapmem( void *base, unsigned int size )
   /* create heap struct as header of memory alloc */
   d0_heap* heap  = (d0_heap*)base;
   /* test alignment and minimal size*/
-  assert( ! (((unsigned int)base | size) & 3) );
+  assert( ! (((unsigned int)base | size) & D0_FIXED_RANGE_ALIGNMENT_MASK) );
   assert( size > ( sizeof(memblk) + sizeof(d0_heap)));
-  heap->base = heap + 1;
-  heap->end  = (char*)(heap->base) + size - 1 ;
+  heap->base = (memblk*)((((unsigned int)base + sizeof(d0_heap) +
+                           sizeof(memblk) + D0_FIXED_RANGE_ALIGNMENT_MASK) &
+                          ~D0_FIXED_RANGE_ALIGNMENT_MASK) - sizeof(memblk));
+  heap->end = (char*)base + size - 1;
   ((memblk*)(heap->base))->lastblk = NULL;
-  ((memblk*)(heap->base))->size = size - sizeof(memblk);
+  ((memblk*)(heap->base))->size =
+    (unsigned int)((char*)heap->end - (char*)heap->base + 1 - sizeof(memblk));
 }
 
 /******************************************************************************
@@ -97,8 +100,10 @@ void * d0_fixed_range_heapalloc(void *ctrlblk, unsigned int size)
   memblk *newfragment   = NULL;
 
   assert( size );
-  /*align size to 4 bytes*/
-  size = ( size + 3 ) & ~3;
+  /* Include the following block header when rounding so the next
+   * allocation's payload remains 128-byte aligned. */
+  size = ((size + sizeof(memblk) + D0_FIXED_RANGE_ALIGNMENT_MASK) &
+          ~D0_FIXED_RANGE_ALIGNMENT_MASK) - sizeof(memblk);
   /* iterate heap range until a fitting block is found or end of heap is reached*/
   do {
     /* see if block is free and fits */
