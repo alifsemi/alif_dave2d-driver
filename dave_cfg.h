@@ -38,6 +38,10 @@
 
 #define WITH_MM_FIXED_RANGE
 
+#ifndef D0_FIXED_RANGE_ALIGNMENT
+#define D0_FIXED_RANGE_ALIGNMENT 128
+#endif
+
 // #define WITH_MM_DYNAMIC
 #endif
 
